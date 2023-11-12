@@ -51,9 +51,7 @@ function Home() {
                                 showProfil
                             }><BiUserCircle/></div>
                         </div>
-
                     </div>
-
                 </div>
                 <div className="baniere">
                     <div className="row">
@@ -74,18 +72,17 @@ function Home() {
                                 <div style={{paddingLeft: 40}}>
                                     <Checkbox checked={true} disabled={false} style={{marginLeft: -40}}>
                                         Envoie SMS en chaque seconde sans interuption
-                                    </Checkbox><br/>
+                                    </Checkbox><br/><br/>
                                     <Checkbox checked={true} disabled={false} style={{marginLeft: -40}}>
                                         Automatique send les loremspm
-                                    </Checkbox><br/>
+                                    </Checkbox><br/><br/>
                                     <Checkbox checked={true} disabled={false} style={{marginLeft: -40}}>
                                         Tenir votre clientelle informée du monde
-                                    </Checkbox><br/>
+                                    </Checkbox><br/><br/>
                                     <Checkbox checked={true} disabled={false} style={{marginLeft: -40}}>
                                         Tenir votre clientelle informée du monde
                                     </Checkbox><br/>
                                 </div>
-
                             </div>
                         </div>
                         <div className="col-md-6" id='imageBanier'>
@@ -125,7 +122,7 @@ function Home() {
                     avoir un compte actif</h4><br/>
                 <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
                     <Button>Créer un compte</Button>
-                    <Button onClick={()=>navigate('/Login')}>Se connecter</Button>
+                    <Button onClick={() => navigate('/Login')}>Se connecter</Button>
                 </div>
             </Drawer>
         </>
