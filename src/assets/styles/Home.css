@@ -1,0 +1,87 @@
+.root-home {
+    background-color: #F6F5F1;
+}
+
+.bar-menu {
+    background-color: white;
+    height: 50px;
+}
+
+.menu-logo {
+    margin-top: 6px;
+}
+
+.menu-icon-avatar {
+    margin-left: 10px;
+}
+
+.menu-item {
+    margin-left: 20px;
+    margin-top: 14px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    font-weight: normal;
+}
+
+.menu-rigth {
+    text-align: right;
+    margin-right: 10px;
+    font-size: 30px;
+    color: black;
+}
+
+#imageBanier {
+    text-align: center;
+
+}
+
+#baniere-text{
+    padding-top: 10px;
+}
+
+.menu-list.open {
+    display: block; /* Lorsque la classe 'open' est ajoutée, le menu est affiché */
+}
+
+.baniere{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+/*Phone*/
+@media screen and (min-width: 325px) and (max-width: 767px) {
+    .menu-list {
+        display: none;
+    }
+    #imageBanier{
+        display: none;
+    }
+}
+
+/*Tablet*/
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+    .menu-list {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .menu-icon {
+        display: none;
+    }
+}
+
+/*Desktop*/
+@media screen and (min-width: 1024px) and (max-width: 1600px) {
+    .menu-list {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .menu-icon {
+        display: none;
+    }
+
+    #baniere-text{
+
+    }
+}

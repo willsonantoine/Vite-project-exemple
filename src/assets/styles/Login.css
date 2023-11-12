@@ -1,0 +1,35 @@
+
+
+/*Phone*/
+@media screen and (min-width: 325px) and (max-width:767px) {
+    #left-login-dif {
+        display: none;
+    }
+    #rigth-login-dif{
+        margin-left: 20px;
+    }
+    #div-btn-seconnecter{
+        margin-right: 16px;
+    }
+}
+
+/*Tablet*/
+@media screen and (min-width: 768px) and (max-width:1023px) {
+    #left-login-dif {
+        display: block;
+    }
+    #div-btn-seconnecter{
+        margin-right: 23px;
+    }
+}
+
+/*Desktop*/
+@media screen and (min-width: 1024px) and (max-width:1600px) {
+    #left-login-dif {
+        display: block;
+    }
+
+    #div-btn-seconnecter{
+        margin-right: 25px;
+    }
+}
