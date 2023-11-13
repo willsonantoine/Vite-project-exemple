@@ -25,6 +25,13 @@
     font-weight: bold;
 }
 
+.textInput3 {
+    width: 95%;
+    margin-top: 5px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
 .button {
     background-color: #35597B;
     height: 40px;

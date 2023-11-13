@@ -6,7 +6,8 @@ import Login from "./views/Login.tsx";
 import NotFound from "./views/NotFound.tsx";
 import Produits from "./views/Produits.tsx";
 import AppRoot from "./views/AppRoot.tsx";
-import AppProduit from "./views/AppProduits/AppProduit.tsx";
+import AppProduit from "./views/AppProduits/AppProduits.tsx";
+import AppSMS from "./views/Sms/AppSMS.tsx";
 
 const router = createBrowserRouter([
     {
@@ -28,6 +29,11 @@ const router = createBrowserRouter([
     {
         path: "/app/produit",
         element: <AppProduit/>
+    }
+    ,
+    {
+        path: "/app/sms",
+        element: <AppSMS/>
     }
 ]);
 

@@ -12,11 +12,14 @@ import {
     UploadFile,
     UploadProps
 } from "antd";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import ImgCrop from 'antd-img-crop';
 import {RcFile} from "antd/es/upload";
 import AppTableProduis from "./AppTableProduit.tsx";
 import {ColumnsType} from "antd/es/table";
+import HttpRequest from "../../Controllers/HttpRequest.ts";
+import {Option} from "antd/es/mentions";
+
 interface DataType {
     key: string;
     name: string;
@@ -68,14 +71,24 @@ const dataSource = [
         address: '10 Downing Street',
     },
 ]
-function AppProduit() {
+
+function AppProduits() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isShowPopup, setIsShowPopup] = useState(false);
     const [fileList, setFileList] = useState<UploadFile[]>([]);
+
+    const [name, setName] = useState('')
+    const [categorie, setCategorie] = useState('')
+    const [prix_min, setPrixMin] = useState('')
+    const [prix_max, setPrixMax] = useState('')
+    const [qte_min, setQteMin] = useState(0)
+    const [description, setDescription] = useState('')
+    const [listCategorie, setListCategorie] = useState([])
+
     const onChangeImage: UploadProps['onChange'] = ({fileList: newFileList}) => {
         setFileList(newFileList);
     };
-    const { TextArea } = Input;
+    const {TextArea} = Input;
     const onPreview = async (file: UploadFile) => {
         let src = file.url as string;
         if (!src) {
@@ -90,6 +103,47 @@ function AppProduit() {
         const imgWindow = window.open(src);
         imgWindow?.document.write(image.outerHTML);
     };
+
+    useEffect(() => {
+        load_produits()
+        loadProduitCategory()
+    }, [])
+    const load_produits = () => {
+        HttpRequest('/app/produits/load?limit=10&page=1', 'GET').then(response => {
+            setListCategorie(response.data.data.rows)
+        }).catch(error => {
+            console.error(error)
+        })
+    }
+
+    const createProduit = () => {
+
+        HttpRequest('/app/produits/create', 'POST', {
+            "reference": "P-20202",
+            "name": "Veste Croisé",
+            "prix_min": 10,
+            "prix_max": 100,
+            "qte_min": 30,
+            "categorie": "Homme",
+            "description": "Je suis un bon produit"
+        }).then(response => {
+            console.log(response)
+        }).catch(error => {
+            console.error(error)
+        })
+
+    }
+
+    const loadProduitCategory = () => {
+
+        HttpRequest('/app/produits/load-categories?limit=1000&page=1', 'GET').then(response => {
+            console.log(response.data.data.rows)
+            setListCategorie(response.data.data.rows)
+        }).catch(error => {
+            console.error(error)
+        })
+
+    }
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -116,17 +170,12 @@ function AppProduit() {
         console.log('search:', value);
     };
 
-// Filter `option.label` match the user type `input`
-    const filterOption = (input: string, option?: { label: string; value: string }) =>
-        (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
-
     const content = (
         <div>
             <Button style={{width: 200, marginBottom: 10}} onClick={showModalProduit}>Nouveau produit</Button><br/>
             <Button style={{width: 200, marginBottom: 10}}>Imprimer la fiche de stock</Button>
         </div>
     );
-
 
 
     return (
@@ -142,52 +191,46 @@ function AppProduit() {
                 </div>
             </div>
             <br/>
-            <AppTableProduis columns={columns} data={dataSource} />
+            <AppTableProduis columns={columns} data={dataSource}/>
 
             <Modal title="Ajouter ou modifier un produit" open={isModalOpen} okText='Enrégistrer' cancelText='Fermer'
-                   onOk={handleOk} onCancel={handleCancel}>
+                   onOk={handleOk} onCancel={handleCancel} footer={null}>
                 <div className='text-input-group'>
                     <label>Nom du produit</label>
-                    <Input className='textInput2' placeholder=""/>
+                    <Input className='textInput2' value={name} onChange={(e) => setName(e.target.value)}
+                           placeholder=""/>
                 </div>
                 <div className='text-input-group'>
                     <label>Catérogie du produit</label>
                     <Select className='textInput2'
                             showSearch
                             placeholder="Selectionner"
-                            optionFilterProp="children"
                             onChange={onChange}
                             onSearch={onSearch}
-                            filterOption={filterOption}
-                            options={[
-                                {
-                                    value: 'jack',
-                                    label: 'Jack',
-                                },
-                                {
-                                    value: 'lucy',
-                                    label: 'Lucy',
-                                },
-                                {
-                                    value: 'tom',
-                                    label: 'Tom',
-                                },
-                            ]}
-                    />
+                    >
+                        {
+                            listCategorie.map((item: any) => {
+                                return <Option value={item.name}>{item.name}</Option>
+                            })
+                        }
+
+                    </Select>
                 </div>
                 <div className='row'>
                     <div className='text-input-group col-md-6'>
                         <label>Prix unitaire</label>
-                        <InputNumber className='textInput2'/>
+                        <InputNumber className='textInput2' onChange={(e) => setQteMin(e.target.value)}/>
                     </div>
                     <div className='text-input-group col-md-6'>
                         <label>Quantité d'alerte</label>
-                        <InputNumber className='textInput2'/>
+                        <InputNumber className='textInput2' value={qte_min}
+                                     onChange={(e) => setQteMin(e.target.value)}/>
                     </div>
                 </div>
                 <div className='text-input-group'>
                     <label>Description</label>
-                    <TextArea className='textInput2'  placeholder=""/>
+                    <TextArea className='textInput2' value={description}
+                              onChange={(e) => setDescription(e.target.value)} placeholder=""/>
                 </div>
                 <div className='text-input-group'>
                     <label>Images</label>
@@ -203,6 +246,9 @@ function AppProduit() {
                         </Upload>
                     </ImgCrop>
                 </div>
+                <div>
+                    <Button className='button' onClick={() => createProduit}>Ajouter</Button>
+                </div>
 
             </Modal>
         </div>
@@ -211,4 +257,4 @@ function AppProduit() {
     )
 }
 
-export default AppProduit
+export default AppProduits
