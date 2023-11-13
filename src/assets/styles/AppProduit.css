@@ -1,0 +1,20 @@
+.table-large{
+
+}
+.table-mobile{
+
+}
+
+@media screen and (min-width: 325px) and (max-width: 767px) {
+
+}
+
+/*Tablet*/
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+
+}
+
+/*Desktop*/
+@media screen and (min-width: 1024px) and (max-width: 1600px) {
+
+}
