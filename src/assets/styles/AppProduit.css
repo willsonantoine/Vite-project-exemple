@@ -1,20 +1,36 @@
-.table-large{
+.table-large {
 
 }
-.table-mobile{
+
+.table-mobile {
 
 }
 
 @media screen and (min-width: 325px) and (max-width: 767px) {
-
+    .table-large {
+        display: none;
+    }
+    .table-mobile{
+        display: block;
+    }
 }
 
 /*Tablet*/
 @media screen and (min-width: 768px) and (max-width: 1023px) {
-
+    #table-large {
+        display: block;
+    }
+    .table-mobile{
+        display: none;
+    }
 }
 
 /*Desktop*/
 @media screen and (min-width: 1024px) and (max-width: 1600px) {
-
+    #table-large {
+        display: block;
+    }
+    .table-mobile{
+        display: none;
+    }
 }

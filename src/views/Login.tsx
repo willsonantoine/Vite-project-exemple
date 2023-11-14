@@ -1,7 +1,7 @@
 import {useState} from "react";
 import img from '../assets/login-1.jpg'
 import AlertMessage from "../Components/NotificationAlert.tsx";
-import HttpRequest from "../Controllers/HttpRequest.ts";
+import HttpRequest from "../Controllers/HttpRequest.tsx";
 import {EyeInvisibleOutlined, EyeTwoTone} from '@ant-design/icons';
 import {Input, Spin} from "antd";
 import {useNavigate} from "react-router-dom";

@@ -1,13 +1,13 @@
 import '../../assets/styles/RootApp.css'
 import Menus from "../../Components/Menus.tsx";
+import '../../assets/styles/AppProduit.css'
 import {
     Button,
     DatePicker,
     Input,
-    InputNumber,
     Modal,
     Popover,
-    Select, Space,
+    Select, Spin,
     Upload,
     UploadFile,
     UploadProps
@@ -15,75 +15,40 @@ import {
 import {useEffect, useState} from "react";
 import ImgCrop from 'antd-img-crop';
 import {RcFile} from "antd/es/upload";
-import AppTableProduis from "./AppTableProduit.tsx";
-import {ColumnsType} from "antd/es/table";
-import HttpRequest from "../../Controllers/HttpRequest.ts";
+import HttpRequest from "../../Controllers/HttpRequest.tsx";
 import {Option} from "antd/es/mentions";
+import NotificationAlert from "../../Components/NotificationAlert.tsx";
+import constantes from "../../Controllers/Constantes.tsx";
+import Images from "../../Components/Images.tsx";
+import {IoIosAddCircleOutline} from "react-icons/io";
+import {MdEditNote} from "react-icons/md";
+import {CiMenuKebab} from "react-icons/ci";
 
-interface DataType {
-    key: string;
-    name: string;
-    age: number;
-    address: string;
-    tags: string[];
-}
-
-const columns: ColumnsType<DataType> = [
-    {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
-        render: (text) => <a>{text}</a>,
-    },
-    {
-        title: 'Age',
-        dataIndex: 'age',
-        key: 'age',
-    },
-    {
-        title: 'Address',
-        dataIndex: 'address',
-        key: 'address',
-    },
-    {
-        title: 'Action',
-        key: 'action',
-        render: (_, record) => (
-            <Space size="middle">
-                <a>Invite {record.name}</a>
-                <a>Delete</a>
-            </Space>
-        ),
-    },
-];
-const dataSource = [
-    {
-        key: '1',
-        name: 'Mike',
-        age: 32,
-        address: '10 Downing Street',
-
-    },
-    {
-        key: '2',
-        name: 'John',
-        age: 42,
-        address: '10 Downing Street',
-    },
-]
 
 function AppProduits() {
+
+    const [ListProduits, setListProduits] = useState([]);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalOpenApprov, setIsModalOpenApprov] = useState(false);
     const [isShowPopup, setIsShowPopup] = useState(false);
+    const [isShowPopupProduitList, setIsShowPopupProduitList] = useState(Array(ListProduits.length).fill(false));
     const [fileList, setFileList] = useState<UploadFile[]>([]);
 
     const [name, setName] = useState('')
     const [categorie, setCategorie] = useState('')
-    const [prix_min, setPrixMin] = useState('')
-    const [prix_max, setPrixMax] = useState('')
-    const [qte_min, setQteMin] = useState(0)
+    const [prix_min, setPrixMin] = useState('0')
+    const [prix_max, setPrixMax] = useState('0')
+    const [qte_min, setQteMin] = useState('0')
     const [description, setDescription] = useState('')
     const [listCategorie, setListCategorie] = useState([])
+    const [reference, setReference] = useState('')
+
+    const [messageAlert, setMessageAlert] = useState('')
+    const [messageAlertType, setMessageAlertType] = useState(false)
+    const [isShowMessageAlert, setIsShowMessageAlert] = useState(false)
+    const [isPin, setIsPin] = useState(false)
+
 
     const onChangeImage: UploadProps['onChange'] = ({fileList: newFileList}) => {
         setFileList(newFileList);
@@ -108,28 +73,37 @@ function AppProduits() {
         load_produits()
         loadProduitCategory()
     }, [])
+
     const load_produits = () => {
         HttpRequest('/app/produits/load?limit=10&page=1', 'GET').then(response => {
-            setListCategorie(response.data.data.rows)
+            setListProduits(response.data.data.rows)
+            console.log(ListProduits)
         }).catch(error => {
             console.error(error)
         })
     }
 
     const createProduit = () => {
-
+        setIsPin(true)
         HttpRequest('/app/produits/create', 'POST', {
-            "reference": "P-20202",
-            "name": "Veste Croisé",
-            "prix_min": 10,
-            "prix_max": 100,
-            "qte_min": 30,
-            "categorie": "Homme",
-            "description": "Je suis un bon produit"
+            "reference": reference,
+            "name": name,
+            "prix_min": prix_min,
+            "prix_max": prix_max,
+            "qte_min": qte_min,
+            "categorie": categorie,
+            "description": description
         }).then(response => {
-            console.log(response)
+            const data = response.data;
+            if (data.status === 200) {
+                setIsModalOpen(false);
+                load_produits()
+            }
+            showAlertMessage(data.message, data.status === 200)
+            setIsPin(false)
         }).catch(error => {
-            console.error(error)
+            showAlertMessage(constantes.getMessage(error), false)
+            setIsPin(false)
         })
 
     }
@@ -137,7 +111,6 @@ function AppProduits() {
     const loadProduitCategory = () => {
 
         HttpRequest('/app/produits/load-categories?limit=1000&page=1', 'GET').then(response => {
-            console.log(response.data.data.rows)
             setListCategorie(response.data.data.rows)
         }).catch(error => {
             console.error(error)
@@ -157,13 +130,25 @@ function AppProduits() {
         setIsModalOpen(false);
     };
 
+    const handleOkApprov = () => {
+        setIsModalOpenApprov(false);
+    };
+
+    const handleCancelApprov = () => {
+        setIsModalOpenApprov(false);
+    };
+    function showModalApprov() {
+        setIsModalOpenApprov(true);
+    }
     function showModalProduit() {
         setIsShowPopup(false)
         showModal()
     }
 
+
+
     const onChange = (value: string) => {
-        console.log(`selected ${value}`);
+        setCategorie(value)
     };
 
     const onSearch = (value: string) => {
@@ -177,7 +162,19 @@ function AppProduits() {
         </div>
     );
 
+    function showAlertMessage(message: string, type: boolean) {
+        setIsShowMessageAlert(true);
+        setMessageAlertType(type)
+        setMessageAlert(message)
+    }
 
+    const closePopover = (index: number) => {
+        setIsShowPopupProduitList(prevState => {
+            const newState = [...prevState];
+            newState[index] = false; // Ferme le Popover spécifique à l'index
+            return newState;
+        });
+    };
     return (
         <div className='root-home'>
             <Menus/>
@@ -190,65 +187,261 @@ function AppProduits() {
                     </Popover>
                 </div>
             </div>
+            {
+                isShowMessageAlert ?
+                    <NotificationAlert message={messageAlert} type={messageAlertType}/> : ''
+            }
             <br/>
-            <AppTableProduis columns={columns} data={dataSource}/>
-
-            <Modal title="Ajouter ou modifier un produit" open={isModalOpen} okText='Enrégistrer' cancelText='Fermer'
-                   onOk={handleOk} onCancel={handleCancel} footer={null}>
-                <div className='text-input-group'>
-                    <label>Nom du produit</label>
-                    <Input className='textInput2' value={name} onChange={(e) => setName(e.target.value)}
-                           placeholder=""/>
-                </div>
-                <div className='text-input-group'>
-                    <label>Catérogie du produit</label>
-                    <Select className='textInput2'
-                            showSearch
-                            placeholder="Selectionner"
-                            onChange={onChange}
-                            onSearch={onSearch}
-                    >
+            <div>
+                <div className='table-large'>
+                    <table className="table header-border table-responsive-sm tbl-common">
+                        <thead>
+                        <tr>
+                            <th>REFERENCE</th>
+                            <th></th>
+                            <th>Nom</th>
+                            <th>Qte</th>
+                            <th>Prix</th>
+                            <th>Catégorie</th>
+                            <th>Modifié le</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
                         {
-                            listCategorie.map((item: any) => {
-                                return <Option value={item.name}>{item.name}</Option>
+                            ListProduits.map((item: any, i) => {
+                                return (
+                                    <tr key={i}>
+                                        <td><strong>{item.reference}</strong></td>
+                                        <td><img src={Images.default_product} height={30}/></td>
+                                        <td>{item.name}</td>
+                                        <td><span style={{
+                                            backgroundColor: (item.qte_min > item.qte) ? 'red' : "green",
+                                            padding: 5,
+                                            color: "white", borderRadius: 10
+                                        }}>{item.qte}</span></td>
+                                        <td>{item.prix_max}</td>
+                                        <td>{item.ProduitsCategorie.name}</td>
+                                        <td>{constantes.geDateFormat(item.updatedAt)}</td>
+                                        <td>
+                                            <div className='btn-group'>
+                                                <Button className='button-icon'
+                                                        onClick={showModalProduit}><MdEditNote/></Button>
+                                                <Button className='button-icon' onClick={showModalApprov}>
+                                                    <IoIosAddCircleOutline/> </Button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )
                             })
                         }
+                        </tbody>
+                    </table>
+                </div>
+                <div className='table-mobile' style={{marginLeft: 10}}>
+                    {
+                        ListProduits.map((item: any, i) => {
+                            return (
+                                <div key={i}
+                                     style={{backgroundColor: "white", borderRadius: 5, paddingLeft: 5, marginTop: 5, marginLeft: 4, height: 50}}>
+                                    <div
+                                        style={{display: "flex", flexDirection: 'row', justifyContent: 'space-between'}}>
+                                        <div
+                                            style={{display: "flex", flexDirection: 'row', justifyContent: 'space-between'}}>
+                                            <div style={{textAlign: 'center', marginTop: 10, marginRight: 10}}>
+                                                <img src={Images.default_product} height={30}/>
+                                            </div>
+                                            <div>
+                                                <h5>{item.name}</h5>
+                                                <span>{item.ProduitsCategorie.name}</span>
+                                            </div>
 
-                    </Select>
+                                        </div>
+                                        <div
+                                            style={{marginRight: 10, marginTop: 3, display: "flex", flexDirection: 'row', justifyContent: 'space-between'}}>
+                                            <div>
+                                                <span><strong style={{fontSize: 17}}>{item.qte}</strong> Pcs</span><br/>
+                                                <span>{item.prix_max} USD</span>
+                                            </div>
+                                            <div style={{color: "red", fontSize: 30}}>
+                                                <Popover key={i} placement="bottom" open={isShowPopupProduitList[i]}
+                                                         title={<span>{item.name}</span>} content={
+                                                    <div>
+                                                        <span>Prix Min : {item.prix_min};<br/> Prix Max :{item.prix_max}<br/>Qte Min : {item.qte_min}<br/>
+                                                            Catégorie : {item.ProduitsCategorie.name} <br/> </span>
+                                                        <Button style={{width: 200, marginBottom: 10}}
+                                                                onClick={() => {
+                                                                    showModalProduit();
+                                                                    closePopover(i)
+                                                                }}>Modifier</Button><br/>
+                                                        <Button
+                                                            style={{width: 200, marginBottom: 10}}
+                                                            onClick={() => {
+                                                                showModalApprov(), closePopover(i)
+                                                            }}>Approvisionner</Button><br/>
+                                                        <Button
+                                                            style={{width: 200, marginBottom: 10}}>Historique</Button>
+                                                    </div>
+                                                }>
+                                                    <CiMenuKebab key={i}
+                                                                 onClick={() => setIsShowPopupProduitList(prevState => {
+                                                                     const newState = [...prevState];
+                                                                     newState[i] = !newState[i]; // Inverse l'état spécifique à l'index i
+                                                                     return newState;
+                                                                 })}/>
+                                                </Popover>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        })
+                    }
                 </div>
+            </div>
+
+            <Modal title="Ajouter ou modifier un produit" open={isModalOpen} okText='Enrégistrer'
+                   cancelText='Fermer'
+                   onOk={handleOk} onCancel={handleCancel} footer={null}>
                 <div className='row'>
-                    <div className='text-input-group col-md-6'>
-                        <label>Prix unitaire</label>
-                        <InputNumber className='textInput2' onChange={(e) => setQteMin(e.target.value)}/>
+                    <div className='col-md-8'>
+                        {
+                            isShowMessageAlert ?
+                                <NotificationAlert message={messageAlert} type={messageAlertType}/> : ''
+                        }
+
                     </div>
-                    <div className='text-input-group col-md-6'>
-                        <label>Quantité d'alerte</label>
-                        <InputNumber className='textInput2' value={qte_min}
-                                     onChange={(e) => setQteMin(e.target.value)}/>
+                    <div className='text-input-group col-md-8'>
+                        <label>Nom du produit</label>
+                        <Input className='textInput2' value={name} onChange={(e) => setName(e.target.value)}
+                               placeholder=""/>
                     </div>
-                </div>
-                <div className='text-input-group'>
-                    <label>Description</label>
-                    <TextArea className='textInput2' value={description}
-                              onChange={(e) => setDescription(e.target.value)} placeholder=""/>
-                </div>
-                <div className='text-input-group'>
-                    <label>Images</label>
-                    <ImgCrop rotationSlider>
-                        <Upload
-                            action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
-                            listType="picture-card"
-                            fileList={fileList}
-                            onChange={onChangeImage}
-                            onPreview={onPreview}
+                    <div className='text-input-group col-md-4'>
+                        <label>Référence</label>
+                        <Input className='textInput2' value={reference}
+                               onChange={(e) => setReference(e.target.value)}/>
+                    </div>
+                    <div className='text-input-group col-md-12'>
+                        <label>Catérogie du produit</label>
+                        <Select className='textInput2'
+                                showSearch
+                                placeholder="Selectionner"
+                                onChange={onChange}
+                                onSearch={onSearch}
                         >
-                            {fileList.length < 5 && '+ Upload'}
-                        </Upload>
-                    </ImgCrop>
+                            {
+                                listCategorie.map((item: any) => {
+                                    return <Option value={item.name}>{item.name}</Option>
+                                })
+                            }
+
+                        </Select>
+                    </div>
+
+                    <div className='text-input-group col-md-4'>
+                        <label>Prix Min</label>
+                        <Input className='textInput2' value={prix_min}
+                               onChange={(e) => setPrixMin(e.target.value)}/>
+                    </div>
+                    <div className='text-input-group col-md-4'>
+                        <label>Prix Max</label>
+                        <Input className='textInput2' value={prix_max}
+                               onChange={(e) => setPrixMax(e.target.value)}/>
+                    </div>
+                    <div className='text-input-group col-md-4'>
+                        <label>Qte d'alerte</label>
+                        <Input className='textInput2' value={qte_min}
+                               onChange={(e) => setQteMin(e.target.value)}/>
+                    </div>
+
+                    <div className='text-input-group col-md-12'>
+                        <label>Description</label>
+                        <TextArea className='textInput2' value={description}
+                                  onChange={(e) => setDescription(e.target.value)} placeholder=""/>
+                    </div>
+                    <div className='text-input-group col-md-12'>
+                        <label>Images</label>
+                        <ImgCrop rotationSlider>
+                            <Upload
+                                action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+                                listType="picture-card"
+                                fileList={fileList}
+                                onChange={onChangeImage}
+                                onPreview={onPreview}
+                            >
+                                {fileList.length < 5 && '+ Upload'}
+                            </Upload>
+                        </ImgCrop>
+                    </div>
+                    <div>
+                        <Button disabled={isPin} className='button' onClick={createProduit}>Ajouter {isPin ?
+                            <Spin/> : ``}</Button>
+                    </div>
                 </div>
-                <div>
-                    <Button className='button' onClick={() => createProduit}>Ajouter</Button>
+
+
+            </Modal>
+
+            <Modal title="Approvisionnement" open={isModalOpenApprov}
+                   onOk={handleOkApprov} onCancel={handleCancelApprov} footer={null}>
+                <div className='row'>
+                    <div className='col-md-8'>
+                        {
+                            isShowMessageAlert ?
+                                <NotificationAlert message={messageAlert} type={messageAlertType}/> : ''
+                        }
+
+                    </div>
+                    <div className='text-input-group col-md-8'>
+                        <label>Provenance</label>
+                        <Select className='textInput2'
+                                showSearch
+                                placeholder="Selectionner"
+                                onChange={onChange}
+                                onSearch={onSearch}
+                        >
+                            <Option value='CASH'>Cash</Option>
+                            <Option value='CREDIT'>Crédit</Option>
+                            <Option value='PRODUCTION'>Production</Option>
+                        </Select>
+                    </div>
+                    <div className='text-input-group col-md-4'>
+                        <label>Réf Justificatif</label>
+                        <Input className='textInput2' value={reference}
+                               onChange={(e) => setReference(e.target.value)}/>
+                    </div>
+                    <div className='text-input-group col-md-8'>
+                        <label>Type</label>
+                        <Select className='textInput2'
+                                showSearch
+                                placeholder="Selectionner"
+                                onChange={onChange}
+                                onSearch={onSearch}
+                        >
+                            <Option value='CASH' >Cash</Option>
+                            <Option value='CREDIT'>Crédit</Option>
+                            <Option value='PRODUCTION'>Production</Option>
+                        </Select>
+                    </div>
+
+                    <div className='text-input-group col-md-4'>
+                        <label>Quantité</label>
+                        <Input className='textInput2' value={qte_min}
+                               onChange={(e) => setQteMin(e.target.value)}/>
+                    </div>
+
+                    <div className='text-input-group col-md-12'>
+                        <label>Description</label>
+                        <TextArea className='textInput2' value={description}
+                                  onChange={(e) => setDescription(e.target.value)} placeholder=""/>
+                    </div>
+                    <br/>
+                    <div className='text-input-group col-md-8'>
+                        <Button disabled={isPin} className='button' onClick={createProduit}>Ajouter {isPin ?
+                            <Spin/> : ``}</Button>
+                    </div>
                 </div>
+
 
             </Modal>
         </div>
