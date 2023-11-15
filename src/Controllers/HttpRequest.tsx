@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// const default_url = 'http://192.168.43.186:3010/api/v1'
+// const default_url = 'http://localhost:3010/api/v1'
 const default_url = 'https://api.mlinzitech.store/api/v1'
 
 const run = async (route: string, methode: string, data = {}) => {

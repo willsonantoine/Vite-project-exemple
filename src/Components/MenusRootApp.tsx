@@ -10,6 +10,11 @@ export default [
         path: '/app/Produit'
     },
     {
+        title: 'Facturation',
+        icon: '',
+        path: '/app/facturation'
+    },
+    {
         title: 'SMS',
         icon: '',
         path: '/app/sms'

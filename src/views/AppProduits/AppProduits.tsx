@@ -23,11 +23,14 @@ import Images from "../../Components/Images.tsx";
 import {IoIosAddCircleOutline} from "react-icons/io";
 import {MdEditNote} from "react-icons/md";
 import {CiMenuKebab} from "react-icons/ci";
+import CreatableSelect from 'react-select/creatable';
 
 
 function AppProduits() {
 
+    const [optionsFournisseur, setOptionsFournisseur] = useState([]);
     const [ListProduits, setListProduits] = useState([]);
+    const [ListServices, setListServices] = useState([]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalOpenApprov, setIsModalOpenApprov] = useState(false);
@@ -49,6 +52,14 @@ function AppProduits() {
     const [isShowMessageAlert, setIsShowMessageAlert] = useState(false)
     const [isPin, setIsPin] = useState(false)
 
+    // Approvisionnement
+    const [id_service, setIdServcie] = useState('')
+    const [fournisseur, setFournisseur] = useState('')
+    const [ref_justificative, setRefJustificative] = useState('')
+    const [type, setTye] = useState('')
+    const [qte, setQte] = useState('')
+    const [descriptionApprov, setDescriptionApprov] = useState('')
+    const [id_produit, setIdProduit] = useState('')
 
     const onChangeImage: UploadProps['onChange'] = ({fileList: newFileList}) => {
         setFileList(newFileList);
@@ -72,6 +83,8 @@ function AppProduits() {
     useEffect(() => {
         load_produits()
         loadProduitCategory()
+        loadServices();
+        loadFournisseur();
     }, [])
 
     const load_produits = () => {
@@ -108,10 +121,62 @@ function AppProduits() {
 
     }
 
+    const createApprovisionnement = () => {
+        if (fournisseur != null && qte != null && type != null) {
+            setIsPin(true)
+            HttpRequest('/app/produits/approvisionner', 'POST', {
+                "provenance": fournisseur,
+                "id_produit": id_produit,
+                "id_service": id_service,
+                "ref_justificatif": ref_justificative,
+                "qte": qte,
+                "type": type,
+                "prix_achat": 30,
+                "observation": descriptionApprov
+            }).then(response => {
+                const data = response.data;
+                if (data.status === 200) {
+                    setIsModalOpen(false);
+                    load_produits()
+                }
+                showAlertMessage(data.message, data.status === 200)
+                setIsPin(false)
+            }).catch(error => {
+                showAlertMessage(constantes.getMessage(error), false)
+                setIsPin(false)
+            })
+        } else {
+            showAlertMessage("Vous devez completer la quantité ,type et la provenance", false)
+        }
+
+
+    }
+
     const loadProduitCategory = () => {
 
-        HttpRequest('/app/produits/load-categories?limit=1000&page=1', 'GET').then(response => {
-            setListCategorie(response.data.data.rows)
+        HttpRequest('/app/produits/load-categories', 'GET').then(response => {
+            setListCategorie(response.data.data)
+        }).catch(error => {
+            console.error(error)
+        })
+
+    }
+
+    const loadFournisseur = () => {
+
+        HttpRequest('/app/produits/load-fournisseur', 'GET').then(response => {
+            setOptionsFournisseur(response.data.data)
+
+        }).catch(error => {
+            console.error(error)
+        })
+
+    }
+
+    const loadServices = () => {
+
+        HttpRequest('/user/services?page=1&limit=100', 'GET').then(response => {
+            setListServices(response.data.data.rows)
         }).catch(error => {
             console.error(error)
         })
@@ -137,24 +202,32 @@ function AppProduits() {
     const handleCancelApprov = () => {
         setIsModalOpenApprov(false);
     };
-    function showModalApprov() {
+
+    function showModalApprov(id_produit: string) {
+        setIdProduit(id_produit);
+        console.log(id_produit);
         setIsModalOpenApprov(true);
     }
+
     function showModalProduit() {
         setIsShowPopup(false)
         showModal()
     }
 
+    function showModalProduitUpdate(id_produit: string) {
+        console.log(id_produit)
+        setIdProduit(id_produit);
+        setIsShowPopup(false)
+        showModal()
+    }
 
 
-    const onChange = (value: string) => {
-        setCategorie(value)
+    const onChangeType = (value: string) => {
+        setTye(value)
     };
-
-    const onSearch = (value: string) => {
-        console.log('search:', value);
+    const onChangeIdService = (value: string) => {
+        setIdServcie(value)
     };
-
     const content = (
         <div>
             <Button style={{width: 200, marginBottom: 10}} onClick={showModalProduit}>Nouveau produit</Button><br/>
@@ -175,6 +248,27 @@ function AppProduits() {
             return newState;
         });
     };
+
+    function changeFourisseur(selectedOption: any) {
+
+        if (selectedOption) {
+            setFournisseur(selectedOption.value);
+        } else {
+            setFournisseur('');
+        }
+
+    }
+
+    function changeCategorie(selectedOption: any) {
+
+        if (selectedOption) {
+            setCategorie(selectedOption.value);
+        } else {
+            setCategorie('');
+        }
+
+    }
+
     return (
         <div className='root-home'>
             <Menus/>
@@ -226,8 +320,9 @@ function AppProduits() {
                                         <td>
                                             <div className='btn-group'>
                                                 <Button className='button-icon'
-                                                        onClick={showModalProduit}><MdEditNote/></Button>
-                                                <Button className='button-icon' onClick={showModalApprov}>
+                                                        onClick={() => showModalProduitUpdate(item.id)}><MdEditNote/></Button>
+                                                <Button className='button-icon'
+                                                        onClick={() => showModalApprov(item.id)}>
                                                     <IoIosAddCircleOutline/> </Button>
                                             </div>
                                         </td>
@@ -243,11 +338,26 @@ function AppProduits() {
                         ListProduits.map((item: any, i) => {
                             return (
                                 <div key={i}
-                                     style={{backgroundColor: "white", borderRadius: 5, paddingLeft: 5, marginTop: 5, marginLeft: 4, height: 50}}>
+                                     style={{
+                                         backgroundColor: "white",
+                                         borderRadius: 5,
+                                         paddingLeft: 5,
+                                         marginTop: 5,
+                                         marginLeft: 4,
+                                         height: 50
+                                     }}>
                                     <div
-                                        style={{display: "flex", flexDirection: 'row', justifyContent: 'space-between'}}>
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: 'row',
+                                            justifyContent: 'space-between'
+                                        }}>
                                         <div
-                                            style={{display: "flex", flexDirection: 'row', justifyContent: 'space-between'}}>
+                                            style={{
+                                                display: "flex",
+                                                flexDirection: 'row',
+                                                justifyContent: 'space-between'
+                                            }}>
                                             <div style={{textAlign: 'center', marginTop: 10, marginRight: 10}}>
                                                 <img src={Images.default_product} height={30}/>
                                             </div>
@@ -258,7 +368,13 @@ function AppProduits() {
 
                                         </div>
                                         <div
-                                            style={{marginRight: 10, marginTop: 3, display: "flex", flexDirection: 'row', justifyContent: 'space-between'}}>
+                                            style={{
+                                                marginRight: 10,
+                                                marginTop: 3,
+                                                display: "flex",
+                                                flexDirection: 'row',
+                                                justifyContent: 'space-between'
+                                            }}>
                                             <div>
                                                 <span><strong style={{fontSize: 17}}>{item.qte}</strong> Pcs</span><br/>
                                                 <span>{item.prix_max} USD</span>
@@ -271,13 +387,13 @@ function AppProduits() {
                                                             Catégorie : {item.ProduitsCategorie.name} <br/> </span>
                                                         <Button style={{width: 200, marginBottom: 10}}
                                                                 onClick={() => {
-                                                                    showModalProduit();
+                                                                    showModalProduitUpdate(item.id);
                                                                     closePopover(i)
                                                                 }}>Modifier</Button><br/>
                                                         <Button
                                                             style={{width: 200, marginBottom: 10}}
                                                             onClick={() => {
-                                                                showModalApprov(), closePopover(i)
+                                                                showModalApprov(item.id), closePopover(i)
                                                             }}>Approvisionner</Button><br/>
                                                         <Button
                                                             style={{width: 200, marginBottom: 10}}>Historique</Button>
@@ -323,19 +439,11 @@ function AppProduits() {
                     </div>
                     <div className='text-input-group col-md-12'>
                         <label>Catérogie du produit</label>
-                        <Select className='textInput2'
-                                showSearch
-                                placeholder="Selectionner"
-                                onChange={onChange}
-                                onSearch={onSearch}
-                        >
-                            {
-                                listCategorie.map((item: any) => {
-                                    return <Option value={item.name}>{item.name}</Option>
-                                })
-                            }
+                        <CreatableSelect className='textInput2'
 
-                        </Select>
+                                         onChange={changeCategorie}
+
+                                         isClearable options={listCategorie}/>
                     </div>
 
                     <div className='text-input-group col-md-4'>
@@ -393,32 +501,38 @@ function AppProduits() {
 
                     </div>
                     <div className='text-input-group col-md-8'>
-                        <label>Provenance</label>
+                        <label>Point de vente</label>
                         <Select className='textInput2'
-                                showSearch
                                 placeholder="Selectionner"
-                                onChange={onChange}
-                                onSearch={onSearch}
+                                onChange={onChangeIdService}
                         >
-                            <Option value='CASH'>Cash</Option>
-                            <Option value='CREDIT'>Crédit</Option>
-                            <Option value='PRODUCTION'>Production</Option>
+                            {
+                                ListServices.map((item: any) => {
+                                    return (<Option value={item.id}>{item.name}</Option>)
+                                })
+                            }
+
                         </Select>
+
+                    </div>
+                    <div className='text-input-group col-md-8'>
+                        <label>Provenance</label>
+                        <CreatableSelect className='textInput2' onChange={changeFourisseur} isClearable
+                                         options={optionsFournisseur}/>
                     </div>
                     <div className='text-input-group col-md-4'>
                         <label>Réf Justificatif</label>
-                        <Input className='textInput2' value={reference}
-                               onChange={(e) => setReference(e.target.value)}/>
+                        <Input className='textInput2' value={ref_justificative}
+                               onChange={(e) => setRefJustificative(e.target.value)}/>
                     </div>
                     <div className='text-input-group col-md-8'>
                         <label>Type</label>
                         <Select className='textInput2'
                                 showSearch
                                 placeholder="Selectionner"
-                                onChange={onChange}
-                                onSearch={onSearch}
+                                onChange={onChangeType}
                         >
-                            <Option value='CASH' >Cash</Option>
+                            <Option value='CASH'>Cash</Option>
                             <Option value='CREDIT'>Crédit</Option>
                             <Option value='PRODUCTION'>Production</Option>
                         </Select>
@@ -426,18 +540,18 @@ function AppProduits() {
 
                     <div className='text-input-group col-md-4'>
                         <label>Quantité</label>
-                        <Input className='textInput2' value={qte_min}
-                               onChange={(e) => setQteMin(e.target.value)}/>
+                        <Input className='textInput2' value={qte}
+                               onChange={(e) => setQte(e.target.value)}/>
                     </div>
 
                     <div className='text-input-group col-md-12'>
                         <label>Description</label>
-                        <TextArea className='textInput2' value={description}
-                                  onChange={(e) => setDescription(e.target.value)} placeholder=""/>
+                        <TextArea className='textInput2' value={descriptionApprov}
+                                  onChange={(e) => setDescriptionApprov(e.target.value)} placeholder=""/>
                     </div>
                     <br/>
                     <div className='text-input-group col-md-8'>
-                        <Button disabled={isPin} className='button' onClick={createProduit}>Ajouter {isPin ?
+                        <Button disabled={isPin} className='button' onClick={createApprovisionnement}>Ajouter {isPin ?
                             <Spin/> : ``}</Button>
                     </div>
                 </div>

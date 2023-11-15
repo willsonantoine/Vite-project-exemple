@@ -1,0 +1,108 @@
+.card-nombre-facture {
+    background-color: #2E5A8D;
+    color: white;
+    flex-direction: column;
+    font-size: 15px;
+    text-align: center;
+    padding: 6px;
+    border-radius: 10px;
+    margin-top: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-left: 10px;
+}
+
+.button-print-mobile {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#client-name {
+    margin-top: 16px;
+    padding-right: 16px;
+    width: 300px;
+}
+
+#client-name-mobile {
+    margin-top: 10px;
+    padding-right: 4px;
+    margin-left:10px;
+    width: 250px;
+}
+
+#buttonPrint-mobile {
+    margin-top: 15px;
+    margin-right: 10px;
+    width: 80px;
+    color: white;
+    background-color: red;
+}
+
+#buttonPrint-desktop {
+    color: white;
+    margin-top: 15px;
+    margin-right: 10px;
+    width: 100px;
+    background-color: red;
+}
+
+.entete-panier{
+
+}
+
+
+/*Phone*/
+@media screen and (min-width: 325px) and (max-width: 767px) {
+    #buttonPrint-mobile {
+        display: block;
+    }
+
+    #buttonPrint-desktop {
+        display: none;
+    }
+
+    .button-print-mobile {
+        display: none;
+    }
+    .entete-panier{
+        display: block;
+    }
+}
+
+/*Tablet*/
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+    #buttonPrint-mobile {
+        display: none;
+    }
+
+    #buttonPrint-desktop {
+        display: block;
+    }
+
+    .button-print-mobile {
+        display: block;
+    }
+
+    .entete-panier{
+        display: none;
+    }
+}
+
+/*Desktop*/
+@media screen and (min-width: 1024px) and (max-width: 1600px) {
+    #buttonPrint-mobile {
+        display: none;
+    }
+
+    #buttonPrint-desktop {
+        display: block;
+    }
+
+    .button-print-mobile {
+        display: block;
+    }
+
+    .entete-panier{
+        display: none;
+    }
+}
