@@ -9,6 +9,7 @@
     margin-top: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-left: 10px;
+    min-width:70px;
 }
 
 .button-print-mobile {
@@ -50,6 +51,26 @@
 
 }
 
+.panier-desktop{
+    background-color: white;
+}
+
+.card-panier-mobile{
+    background-color: white;
+    margin-left: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /*padding: 1px;*/
+}
+
+#input-smal{
+    height: 30px;
+    width: 50px;
+    border-color: #0d162c;
+    border-radius:10px;
+    text-align: center;
+    margin-left: 10px;
+}
+
 
 /*Phone*/
 @media screen and (min-width: 325px) and (max-width: 767px) {
@@ -65,6 +86,13 @@
         display: none;
     }
     .entete-panier{
+        display: block;
+    }
+    .panier-desktop{
+        display: none;
+        height:100%
+    }
+    .card-panier-mobile{
         display: block;
     }
 }
@@ -86,6 +114,12 @@
     .entete-panier{
         display: none;
     }
+    .panier-desktop{
+        display: block;
+    }
+    .card-panier-mobile{
+        display: none;
+    }
 }
 
 /*Desktop*/
@@ -103,6 +137,13 @@
     }
 
     .entete-panier{
+        display: none;
+    }
+    .panier-desktop{
+        display: block;
+    }
+
+    .card-panier-mobile{
         display: none;
     }
 }
