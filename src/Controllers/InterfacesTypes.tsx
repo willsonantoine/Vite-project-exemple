@@ -4,6 +4,7 @@ type CardNombreProps = {
 }
 
 type CardPanier = {
+    key:number;
     index: number;
     name: string;
     prix: number;

@@ -25,6 +25,7 @@ function Menus() {
     function closeProfil() {
         setOpen_profil(false)
     }
+
     return (
         <div className='bar-menu'>
             <div style={{display: "flex", flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -32,8 +33,8 @@ function Menus() {
                     <img src={Images.logo} height={30} className='menu-logo' alt='Logo'/>
                     <div className='menu-list'>
                         {
-                            MenusRootApp.map(menu => (
-                                <li className='menu-item'>
+                            MenusRootApp.map((menu, i) => (
+                                <li key={i} className='menu-item'>
                                     <Link to={menu.path}>{menu.title}</Link>
                                 </li>
                             ))

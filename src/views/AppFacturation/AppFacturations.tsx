@@ -103,9 +103,9 @@ function AppFacturations() {
     const open_pintInvoice = () => {
         setOpenPrintInvoice(true)
     }
-    const CardPanier: React.FC<CardPanier> = ({index, name, qte, prix, prix_total}) => {
+    const CardPanier: React.FC<CardPanier> = ({key,index, name, qte, prix, prix_total}) => {
         return (
-            <div className='card-panier-mobile' onClick={() => openModalUpdateLine(index, name, qte, prix)}>
+            <div key={key} className='card-panier-mobile' onClick={() => openModalUpdateLine(index, name, qte, prix)}>
                 <div style={{
                     marginLeft: 4,
                     display: 'flex',
@@ -311,9 +311,9 @@ function AppFacturations() {
             </div>
             <div className='panier-mobile'>
                 <div>
-                    {panier.map((item) => {
+                    {panier.map((item,i) => {
                         return <div>
-                            {<CardPanier name={item.name} prix={item.prix} prix_total={item.prix_total}
+                            {<CardPanier key={i} name={item.name} prix={item.prix} prix_total={item.prix_total}
                                          index={item.index} qte={item.qte}/>}
                         </div>
                     })}

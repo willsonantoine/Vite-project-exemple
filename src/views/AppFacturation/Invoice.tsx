@@ -16,7 +16,7 @@ const Invoice = ({facture}) => {
         printWindow.document.write('<h5>Client: ' + client_name + '</h5>');
         printWindow.document.write('</div>');
         printWindow.document.write('<div class="details">');
-        printWindow.document.write('======================================');
+        printWindow.document.write('========================');
         printWindow.document.write('<table>');
         printWindow.document.write('<thead>');
         printWindow.document.write('<tr>');
@@ -35,7 +35,7 @@ const Invoice = ({facture}) => {
             printWindow.document.write('<td>' + item.prix_total + '</td>');
             printWindow.document.write('</tr>');
         });
-        printWindow.document.write('======================================');
+        printWindow.document.write('==========================');
         printWindow.document.write('</tbody>');
         printWindow.document.write('</table>');
         printWindow.document.write('</div>');
