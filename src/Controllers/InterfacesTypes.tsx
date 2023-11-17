@@ -4,7 +4,7 @@ type CardNombreProps = {
 }
 
 type CardPanier = {
-    key:number;
+    id: number;
     index: number;
     name: string;
     prix: number;
@@ -13,6 +13,7 @@ type CardPanier = {
 }
 
 type CardProduitList = {
+    index: number;
     name: string;
     prix_min: number;
     prix_max: number;
@@ -26,5 +27,7 @@ type FactureInterface = {
     currency: string,
     number: number,
     date: string,
+    synchro: boolean;
+    synchroAt: any;
     details: CardPanier[]
 }

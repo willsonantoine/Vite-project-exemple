@@ -20,11 +20,6 @@ export default [
         path: '/app/sms'
     },
     {
-        title: 'Factures',
-        icon: '',
-        path: '/app/factures'
-    },
-    {
         title: 'Rapport',
         icon: '',
         path: '/app/Rapport',

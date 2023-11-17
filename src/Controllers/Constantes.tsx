@@ -1,4 +1,5 @@
 import {formatDistanceStrict} from 'date-fns';
+import moment, {Moment} from "moment";
 
 const getMessage = (error: Error | any): string | any => {
     let code = 200;
@@ -37,5 +38,43 @@ function geDateFormat(dateString: string): string {
     return relativeDate;
 }
 
+function getCurrentDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
 
-export default {getMessage, formatDate, geDateFormat}
+    return formattedDate;
+}
+
+function formatDateString(dateString: moment.Moment) {
+    const date = new Date(dateString);
+
+    // Vérifier si la date est valide
+    if (isNaN(date.getTime())) {
+        throw new Error('Invalid date');
+    }
+
+    // Formater la date
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+
+    return formattedDate;
+}
+
+function formatDateString2(dateString: string): Moment {
+    const date = moment(dateString);
+
+    // Vérifier si la date est valide
+    if (!date.isValid()) {
+        throw new Error('Invalid date');
+    }
+
+    return date;
+}
+
+
+export default {getMessage, formatDate, geDateFormat, formatDateString, formatDateString2, getCurrentDate}

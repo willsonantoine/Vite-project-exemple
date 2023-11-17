@@ -6,6 +6,7 @@ import {Button, Drawer} from "antd";
 import Colors from "./Colors.tsx";
 import {useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
+import ConnectionStatus from "../Controllers/ConnexionStatus.tsx";
 
 function Menus() {
     const [open_menu, setOpen_menu] = useState(false);
@@ -31,6 +32,7 @@ function Menus() {
             <div style={{display: "flex", flexDirection: 'row', justifyContent: 'space-between'}}>
                 <div style={{display: "flex", flexDirection: 'row'}}>
                     <img src={Images.logo} height={30} className='menu-logo' alt='Logo'/>
+                    <h4 style={{marginTop: 9, marginLeft: 8}}>E'eka</h4>
                     <div className='menu-list'>
                         {
                             MenusRootApp.map((menu, i) => (
@@ -42,6 +44,7 @@ function Menus() {
                     </div>
                 </div>
                 <div style={{display: "flex", flexDirection: 'row'}} className='menu-rigth'>
+                    <ConnectionStatus/>
                     <div className="menu-icon" onClick={
                         showMenu
                     }><AiOutlineMenu/></div>
@@ -51,7 +54,10 @@ function Menus() {
                 </div>
             </div>
             <Drawer
-                title={<img src={Images.logo} height={30} className='menu-logo' alt='Logo'/>}
+                title={<div style={{flexDirection:'row',display:'flex'}}>
+                    <img src={Images.logo} height={30} className='menu-logo' alt='Logo'/><h4
+                        style={{marginTop: 9, marginLeft: 8}}>E'eka</h4>
+                </div>}
                 placement='top'
                 closable={false}
                 onClose={closeMenu}
@@ -70,7 +76,10 @@ function Menus() {
             </Drawer>
 
             <Drawer
-                title={<img src={Images.logo} height={30} className='menu-logo' alt='Logo'/>}
+                title={<div style={{flexDirection:'row',display:'flex'}}>
+                    <img src={Images.logo} height={30} className='menu-logo' alt='Logo'/><h4
+                    style={{marginTop: 9, marginLeft: 8}}>E'eka</h4>
+                </div>}
                 placement='top'
                 closable={false}
                 onClose={closeProfil}

@@ -10,16 +10,6 @@ export default [
         path: '/'
     },
     {
-        title: 'Produits',
-        icon: '',
-        path: '/'
-    },
-    {
-        title: 'Blog',
-        icon: '',
-        path: '/',
-    },
-    {
         title: 'Contact',
         icon: '',
         path: '/'

@@ -9,6 +9,7 @@ import AppRoot from "./views/AppRoot.tsx";
 import AppProduit from "./views/AppProduits/AppProduits.tsx";
 import AppSMS from "./views/Sms/AppSMS.tsx";
 import AppFacturations from "./views/AppFacturation/AppFacturations.tsx";
+import AppRapportFactures from "./views/Rapport/Rapport.tsx";
 
 const router = createBrowserRouter([
     {
@@ -39,6 +40,11 @@ const router = createBrowserRouter([
     {
         path: "/app/facturation",
         element: <AppFacturations/>,
+        errorElement: <NotFound/>
+    },
+    {
+        path: "/app/rapport",
+        element: <AppRapportFactures/>,
         errorElement: <NotFound/>
     }
 ]);

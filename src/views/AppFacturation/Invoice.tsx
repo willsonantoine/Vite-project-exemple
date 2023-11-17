@@ -1,3 +1,4 @@
+import '../../assets/styles/Invoice.css'
 const Invoice = ({facture}) => {
     const {client_name, amount, currency, number, date, details} = facture;
 
@@ -5,6 +6,7 @@ const Invoice = ({facture}) => {
         const printWindow:Window|any = window.open('', '_blank');
         printWindow.document.write('<html lang="fr"><head><title>Facture</title></head><body>');
         printWindow.document.write('<style>');
+        printWindow.document.write('.designation { white-space: nowrap; }');
         printWindow.document.write('</style>');
         printWindow.document.write('<div class="invoice">');
         printWindow.document.write('<div class="header">');
@@ -27,9 +29,9 @@ const Invoice = ({facture}) => {
         printWindow.document.write('</tr>');
         printWindow.document.write('</thead>');
         printWindow.document.write('<tbody>');
-        details.forEach((item:CardPanier) => {
+        details.forEach((item) => {
             printWindow.document.write('<tr>');
-            printWindow.document.write('<td>' + item.name + '</td>');
+            printWindow.document.write('<td class="designation">' + item.name + '</td>');
             printWindow.document.write('<td>' + item.prix + '</td>');
             printWindow.document.write('<td>' + item.qte + '</td>');
             printWindow.document.write('<td>' + item.prix_total + '</td>');

@@ -1,0 +1,52 @@
+.table-mobile-rapport {
+    margin-left: 10px;
+}
+
+.card-rapport-vente-mobile {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    border-radius: 10px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 55px;
+    margin-right: 5px
+}
+
+.bordered-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.bordered-table th, .bordered-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.bordered-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+
+/*Phone*/
+@media screen and (min-width: 325px) and (max-width: 767px) {
+    .table-mobile-rapport {
+        display: block;
+    }
+}
+
+/*Tablet*/
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+    .table-mobile-rapport {
+        display: none;
+    }
+}
+
+/*Desktop*/
+@media screen and (min-width: 1024px) and (max-width: 1600px) {
+    .table-mobile-rapport {
+        display: none;
+    }
+}

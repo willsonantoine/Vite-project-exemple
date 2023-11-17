@@ -41,7 +41,7 @@ function AppFacturations() {
         getProduitsFromLocalStorage()
         calculateTotal()
         loadAllFactures();
-    }, [panier, ListFactures])
+    }, [panier])
 
     const loadAllFactures = () => {
         const data = localStorage.getItem('factures')
@@ -63,7 +63,7 @@ function AppFacturations() {
                 localStorage.setItem('produits', JSON.stringify(response.data.data.rows))
             }
         }).catch(error => {
-            console.error(error)
+            console.error(error.message)
         })
     }
 
@@ -81,8 +81,10 @@ function AppFacturations() {
             client_name: clientName,
             amount: total_general,
             currency: currency,
-            number: ListFactures.length + 1,
+            number: 'ME'+(ListFactures.length + 1),
             date: new Date().toISOString(),
+            synchro:false,
+            synchroAt:null,
             details: panier
         }
         setNumero(facture.number)
@@ -103,9 +105,9 @@ function AppFacturations() {
     const open_pintInvoice = () => {
         setOpenPrintInvoice(true)
     }
-    const CardPanier: React.FC<CardPanier> = ({key,index, name, qte, prix, prix_total}) => {
+    const CardPanier: React.FC<CardPanier> = ({index, name, qte, prix, prix_total}) => {
         return (
-            <div key={key} className='card-panier-mobile' onClick={() => openModalUpdateLine(index, name, qte, prix)}>
+            <div key={index} className='card-panier-mobile' onClick={() => openModalUpdateLine(index, name, qte, prix)}>
                 <div style={{
                     marginLeft: 4,
                     display: 'flex',
@@ -129,16 +131,16 @@ function AppFacturations() {
     };
     const CardNombre: React.FC<CardNombreProps> = ({numero, label}) => {
         return (
-            <div className='card-nombre-facture'>
+            <div  className='card-nombre-facture'>
                 <div style={{fontSize: 12}}>{label}</div>
                 <div style={{fontWeight: "bold"}}>{numero}</div>
             </div>
         );
     };
-    const CardListProduit: React.FC<CardProduitList> = ({name, prix_min, id, prix_max}) => {
+    const CardListProduit: React.FC<CardProduitList> = ({index, name, prix_min, id, prix_max}) => {
 
         return (
-            <div key={id}
+            <div key={index}
                  style={{
                      backgroundColor: "#F3F3F3",
                      borderRadius: 5,
@@ -176,7 +178,7 @@ function AppFacturations() {
                     <div>
                         <Button className='button-icon' style={{marginTop: 10, marginRight: 5}}
                                 onClick={() => {
-                                    AddPanier(name, prix_max, 1);
+                                    AddPanier(id,name, prix_max, 1);
                                     closeListProduit()
                                 }}>
                             <IoIosAddCircleOutline/> </Button>
@@ -206,7 +208,8 @@ function AppFacturations() {
 
     }
 
-    const AddPanier = (name: string, prix: number, qte: number) => {
+    const AddPanier = (id: number, name: string, prix: number, qte: number) => {
+
         const existingProductIndex = panier.findIndex(
             (item) => item.name === name && item.prix === prix
         );
@@ -223,6 +226,7 @@ function AppFacturations() {
             setPanier([
                 ...panier,
                 {
+                    id: id,
                     index: panier.length + 1,
                     name: name,
                     prix: prix,
@@ -234,7 +238,7 @@ function AppFacturations() {
         calculateTotal()
 
     };
-    const UpdatePanier = (index: number, name: string, prix: number, qte: number) => {
+    const UpdatePanier = (index: number, prix: number, qte: number) => {
         const existingProductIndex = panier.findIndex(
             (item) => item.index === index
         );
@@ -275,6 +279,7 @@ function AppFacturations() {
     return (
         <div className='root-home'>
             <Menus/>
+
             <div style={{marginLeft: 5, backgroundColor: '#E9E9E9', paddingBottom: 5, marginRight: 5}}>
                 <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly'}}>
                     <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -311,9 +316,9 @@ function AppFacturations() {
             </div>
             <div className='panier-mobile'>
                 <div>
-                    {panier.map((item,i) => {
+                    {panier.map((item) => {
                         return <div>
-                            {<CardPanier key={i} name={item.name} prix={item.prix} prix_total={item.prix_total}
+                            {<CardPanier id={item.id} name={item.name} prix={item.prix} prix_total={item.prix_total}
                                          index={item.index} qte={item.qte}/>}
                         </div>
                     })}
@@ -364,10 +369,10 @@ function AppFacturations() {
                             {CardSearch}
                         </div>
                         <div style={{marginTop: 5}}>
-                            {ListProduitsCurrent.map((item: any, i) => {
-                                return (<CardListProduit id={item.id} name={item.name} prix_max={item.prix_max}
+                            {ListProduitsCurrent? ListProduitsCurrent.map((item: any, i) => {
+                                return (<CardListProduit key={i} index={i} id={item.id} name={item.name} prix_max={item.prix_max}
                                                          prix_min={item.prix_min}/>)
-                            })}
+                            }):``}
                         </div>
                     </div>
                 </div>
@@ -380,8 +385,8 @@ function AppFacturations() {
                 open={open_listProduit}
                 height={'73%'}
             >
-                {ListProduitsCurrent.map((item: any, i) => {
-                    return (<CardListProduit key={i} id={item.id} name={item.name} prix_max={item.prix_max}
+                {ListProduitsCurrent!.map((item: any, i) => {
+                    return (<CardListProduit index={i} id={item.id} name={item.name} prix_max={item.prix_max}
                                              prix_min={item.prix_min}/>)
                 })}
 
@@ -427,7 +432,7 @@ function AppFacturations() {
                                 }}>Supprimer</Button>
                         <Button className='button'
                                 onClick={() => {
-                                    UpdatePanier(currentIndexProduit, currentNameProduit, currentPrixProduit, currentQteProduit);
+                                    UpdatePanier(currentIndexProduit, currentPrixProduit, currentQteProduit);
                                     cancelUpdateLine()
                                 }}>Modifier</Button>
                     </div>
