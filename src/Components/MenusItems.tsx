@@ -1,17 +1,17 @@
 export default [
     {
-        title: 'Accueille',
+        title: 'Accueil',
         icon: '',
         path: '/'
     },
     {
         title: 'Apropos',
         icon: '',
-        path: '/'
+        path: '/apropos'
     },
     {
         title: 'Contact',
         icon: '',
-        path: '/'
+        path: '/contact'
     }
 ]

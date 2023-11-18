@@ -22,7 +22,7 @@ function AppFacturations() {
     const [ListFactures, setListFactures] = useState<FactureInterface[]>([])
     const [panier, setPanier] = useState<CardPanier[]>([]);
     const [total_general, setTotalGeneral] = useState(0);
-    const [numero, setNumero] = useState(0);
+    const [numero, setNumero] = useState('');
     const [clientName, setClientName] = useState('CLIENT ORDINAIRE');
     const [currency, setCurrency] = useState('USD');
     const [modalUpdateProduito, setModalUpdate] = useState(false);
@@ -41,6 +41,9 @@ function AppFacturations() {
         getProduitsFromLocalStorage()
         calculateTotal()
         loadAllFactures();
+        loadClients();
+        loadAllClient();
+        setCurrency('USD')
     }, [panier])
 
     const loadAllFactures = () => {
@@ -48,6 +51,24 @@ function AppFacturations() {
         if (data) {
             setListFactures(JSON.parse(data));
         }
+    }
+
+    const loadAllClient = () => {
+        const data = localStorage.getItem('clients');
+        if (data) {
+            setListClients(JSON.parse(data));
+        }
+    }
+
+    const loadClients = async () => {
+        HttpRequest('/app/clients/load?limit=10&page=1', 'GET').then(response => {
+            if (response.data.status === 200) {
+                setListClients(response.data.data)
+                localStorage.setItem('clients', JSON.stringify(response.data.data));
+            }
+        }).catch(error => {
+            console.error(error.message)
+        })
     }
 
     const getProduitsFromLocalStorage = () => {
@@ -67,7 +88,7 @@ function AppFacturations() {
         })
     }
 
-    function changeClientName(name) {
+    function changeClientName(name: any) {
         console.log(name.value)
         setClientName(name.value)
     }
@@ -81,10 +102,10 @@ function AppFacturations() {
             client_name: clientName,
             amount: total_general,
             currency: currency,
-            number: 'ME'+(ListFactures.length + 1),
+            number: 'ME' + (ListFactures.length + 1),
             date: new Date().toISOString(),
-            synchro:false,
-            synchroAt:null,
+            synchro: false,
+            synchroAt: null,
             details: panier
         }
         setNumero(facture.number)
@@ -131,7 +152,7 @@ function AppFacturations() {
     };
     const CardNombre: React.FC<CardNombreProps> = ({numero, label}) => {
         return (
-            <div  className='card-nombre-facture'>
+            <div className='card-nombre-facture'>
                 <div style={{fontSize: 12}}>{label}</div>
                 <div style={{fontWeight: "bold"}}>{numero}</div>
             </div>
@@ -178,7 +199,7 @@ function AppFacturations() {
                     <div>
                         <Button className='button-icon' style={{marginTop: 10, marginRight: 5}}
                                 onClick={() => {
-                                    AddPanier(id,name, prix_max, 1);
+                                    AddPanier(id, name, prix_max, 1);
                                     closeListProduit()
                                 }}>
                             <IoIosAddCircleOutline/> </Button>
@@ -369,10 +390,11 @@ function AppFacturations() {
                             {CardSearch}
                         </div>
                         <div style={{marginTop: 5}}>
-                            {ListProduitsCurrent? ListProduitsCurrent.map((item: any, i) => {
-                                return (<CardListProduit key={i} index={i} id={item.id} name={item.name} prix_max={item.prix_max}
+                            {ListProduitsCurrent ? ListProduitsCurrent.map((item: any, i) => {
+                                return (<CardListProduit key={i} index={i} id={item.id} name={item.name}
+                                                         prix_max={item.prix_max}
                                                          prix_min={item.prix_min}/>)
-                            }):``}
+                            }) : ``}
                         </div>
                     </div>
                 </div>
@@ -385,10 +407,12 @@ function AppFacturations() {
                 open={open_listProduit}
                 height={'73%'}
             >
-                {ListProduitsCurrent!.map((item: any, i) => {
-                    return (<CardListProduit index={i} id={item.id} name={item.name} prix_max={item.prix_max}
-                                             prix_min={item.prix_min}/>)
-                })}
+                {
+                    ListProduitsCurrent ? ListProduitsCurrent!.map((item: any, i) => {
+                        return (<CardListProduit index={i} id={item.id} name={item.name} prix_max={item.prix_max}
+                                                 prix_min={item.prix_min}/>)
+                    }) : ``
+                }
 
 
             </Drawer>

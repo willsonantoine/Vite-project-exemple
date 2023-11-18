@@ -10,6 +10,10 @@ import AppProduit from "./views/AppProduits/AppProduits.tsx";
 import AppSMS from "./views/Sms/AppSMS.tsx";
 import AppFacturations from "./views/AppFacturation/AppFacturations.tsx";
 import AppRapportFactures from "./views/Rapport/Rapport.tsx";
+import Apropos from "./views/Apropos/AppApropos.tsx";
+import Contact from "./views/Apropos/Contact.tsx";
+import CreateAccount from "./views/CreateAccount.tsx";
+import ValidateAccount from "./views/ValidateAccount.tsx";
 
 const router = createBrowserRouter([
     {
@@ -18,7 +22,17 @@ const router = createBrowserRouter([
     },
     {
         path: '/login',
-        element: <Login/>
+        element: <Login/>,
+        errorElement: <NotFound/>
+    }, {
+        path: '/create-account',
+        element: <CreateAccount/>,
+        errorElement: <NotFound/>
+    },
+    {
+        path: '/validate-account',
+        element: <ValidateAccount/>,
+        errorElement: <NotFound/>
     },
     {
         path: "/produits",
@@ -40,6 +54,16 @@ const router = createBrowserRouter([
     {
         path: "/app/facturation",
         element: <AppFacturations/>,
+        errorElement: <NotFound/>
+    },
+    {
+        path: "/apropos",
+        element: <Apropos/>,
+        errorElement: <NotFound/>
+    },
+    {
+        path: "/contact",
+        element: <Contact/>,
         errorElement: <NotFound/>
     },
     {

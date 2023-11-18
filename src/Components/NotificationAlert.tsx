@@ -8,6 +8,7 @@ interface AlertProps {
 
 const AlertMessage: React.FC<AlertProps> = ({message, type}) => {
 
-    return <Alert message={message} type={type ? 'success' : 'error'} showIcon closable={true} style={{marginTop:10}}/>;
+    return <Alert message={message} type={type ? 'success' : 'error'} showIcon closable={true}
+                  style={{marginTop: 10}}/>;
 };
 export default AlertMessage

@@ -1,24 +1,16 @@
-import MenusRootApp from "./MenusRootApp.tsx";
+import Images from "./Images.tsx";
+import MenusItems from "./MenusItems.tsx";
+import {Link} from "react-router-dom";
 import {AiOutlineMenu} from "react-icons/ai";
 import {BiUserCircle} from "react-icons/bi";
-import {Button, Drawer} from "antd";
-import Colors from "./Colors.tsx";
 import {useState} from "react";
-import {Link, useNavigate} from "react-router-dom";
-import ConnectionStatus from "../Controllers/ConnexionStatus.tsx";
-import ImageHeader from "./LogoHeader.tsx";
+import {Drawer} from "antd";
+import BoutonCreateOrLogin from "./BoutonCreateOrLogin.tsx";
+import Colors from "./Colors.tsx";
 
-function Menus() {
+function MennRoot() {
     const [open_menu, setOpen_menu] = useState(false);
     const [open_profil, setOpen_profil] = useState(false);
-    const navigate = useNavigate();
-    const showMenu = () => {
-        setOpen_menu(true);
-    };
-    const showProfil = () => {
-        setOpen_profil(true);
-    };
-
     function closeMenu() {
         setOpen_menu(false)
     }
@@ -26,24 +18,34 @@ function Menus() {
     function closeProfil() {
         setOpen_profil(false)
     }
+    const showMenu = () => {
+        setOpen_menu(true);
+    };
+    const showProfil = () => {
+        setOpen_profil(true);
+    };
+    const ImageH = () => {
+        return (<div style={{display: "flex"}}>
+            <img src={Images.logo} height={30} className='menu-logo' alt='Logo'/>
+            <h5 style={{marginTop: 10, marginLeft: 5}}>Mlinzi System</h5>
+        </div>)
+    }
 
     return (
         <div className='bar-menu'>
             <div style={{display: "flex", flexDirection: 'row', justifyContent: 'space-between'}}>
                 <div style={{display: "flex", flexDirection: 'row'}}>
-                    <ImageHeader/>
+                    <img src={Images.logo} height={30} className='menu-logo' alt='Logo'/>
+                    <h4 style={{marginTop: 9, marginLeft: 8, color: 'black'}}>Mlinzi System</h4>
                     <div className='menu-list'>
                         {
-                            MenusRootApp.map((menu, i) => (
-                                <li key={i} className='menu-item'>
-                                    <Link to={menu.path}>{menu.title}</Link>
-                                </li>
+                            MenusItems.map(menu => (
+                                <li className='menu-item'><Link to={menu.path}>{menu.title}</Link></li>
                             ))
                         }
                     </div>
                 </div>
                 <div style={{display: "flex", flexDirection: 'row'}} className='menu-rigth'>
-                    <ConnectionStatus/>
                     <div className="menu-icon" onClick={
                         showMenu
                     }><AiOutlineMenu/></div>
@@ -53,26 +55,26 @@ function Menus() {
                 </div>
             </div>
             <Drawer
-                title={<ImageHeader/>}
+                title={<ImageH/>}
                 placement='top'
                 closable={false}
                 onClose={closeMenu}
                 open={open_menu}
-                width={50}
+                height={220}
             >
                 <div className='menu-list-mobile' style={{marginLeft: -20}}>
                     {
-                        MenusRootApp.map(menu => (
-                            <li className='menu-item' onClick={closeMenu}>
-                                <Link to={menu.path}>{menu.title}</Link>
-                            </li>
+                        MenusItems.map(menu => (
+                            <li><Link to={menu.path} className='menu-item' onClick={closeMenu}>{menu.title}</Link></li>
                         ))
                     }
+                    <BoutonCreateOrLogin/>
                 </div>
+
             </Drawer>
 
             <Drawer
-                title={<ImageHeader/>}
+                title={<ImageH/>}
                 placement='top'
                 closable={false}
                 onClose={closeProfil}
@@ -81,13 +83,10 @@ function Menus() {
             >
                 <h4 style={{fontSize: 15, color: Colors.NOT_IMPORTANT}}>Pour bénéficier des nos services vous devez
                     avoir un compte actif</h4><br/>
-                <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <Button>Créer un compte</Button>
-                    <Button onClick={() => navigate('/Login')}>Se connecter</Button>
-                </div>
+                <BoutonCreateOrLogin/>
             </Drawer>
         </div>
     )
 }
 
-export default Menus;
+export default MennRoot;

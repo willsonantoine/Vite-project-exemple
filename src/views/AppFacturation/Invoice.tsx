@@ -1,5 +1,5 @@
 import '../../assets/styles/Invoice.css'
-const Invoice = ({facture}) => {
+const Invoice = (facture:any) => {
     const {client_name, amount, currency, number, date, details} = facture;
 
     const handlePrint = () => {
@@ -29,7 +29,7 @@ const Invoice = ({facture}) => {
         printWindow.document.write('</tr>');
         printWindow.document.write('</thead>');
         printWindow.document.write('<tbody>');
-        details.forEach((item) => {
+        details.forEach((item:any) => {
             printWindow.document.write('<tr>');
             printWindow.document.write('<td class="designation">' + item.name + '</td>');
             printWindow.document.write('<td>' + item.prix + '</td>');

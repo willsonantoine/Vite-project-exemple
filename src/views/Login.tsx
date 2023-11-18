@@ -5,6 +5,7 @@ import HttpRequest from "../Controllers/HttpRequest.tsx";
 import {EyeInvisibleOutlined, EyeTwoTone} from '@ant-design/icons';
 import {Input, Spin} from "antd";
 import {useNavigate} from "react-router-dom";
+import Flooter from "../Components/Flooter.tsx";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -46,13 +47,13 @@ const Login = () => {
         setshowMessageAlert(true)
         setMessageAlert(message)
     }
-    return (<div className='row'>
+    return (<div className='row' style={{marginRight: 5}}>
         <div className='col-md-6' id='left-login-dif' style={{textAlign: 'center', paddingTop: 50}}>
             <img src={img} alt='logo' height={350}/>
         </div>
         <div className='col-md-6 ' id='rigth-login-dif'>
             <div style={{paddingTop: 50, textAlign: 'left'}}>
-                <h1>E'eka System</h1>
+                <h1>Mlinzi System</h1>
                 <h5 style={{fontSize: 14}}>Un system qui facilite la vie</h5>
             </div>
             <br/>
@@ -81,6 +82,7 @@ const Login = () => {
                 </div>
             </div>
         </div>
+        <Flooter/>
     </div>)
 }
 

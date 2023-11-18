@@ -19,15 +19,37 @@ type CardProduitList = {
     prix_max: number;
     id: number
 }
-
+type CardContact = {
+    name: string;
+    phone: string;
+    id: number;
+    user_contact:{
+        id: number;
+        phone: string;
+    }
+}
 
 type FactureInterface = {
     client_name: string,
     amount: number,
     currency: string,
-    number: number,
+    number: string,
     date: string,
     synchro: boolean;
     synchroAt: any;
     details: CardPanier[]
+}
+
+type CardMessage = {
+    reference: string;
+    phone: string;
+    message: string;
+    status: boolean;
+    createdAt: string;
+    user_to: {
+        id: number;
+        name: string;
+        phone: string;
+        gender: string;
+    }
 }

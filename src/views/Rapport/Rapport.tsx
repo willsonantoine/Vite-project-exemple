@@ -29,7 +29,7 @@ function AppRapportFactures() {
         setClient_name(item.facture.Client.name);
         setAmount(item.facture.amount);
         setCurrency(item.facture.currency);
-        setDate_facture(constantes.formatDate(item.facture.date_facture))
+        setDate_facture(constantes.formatDateString(item.facture.date_facture))
         setDate_facture_interval(constantes.geDateFormat(item.facture.date_facture))
         setDetails(item.details)
         setOpen_detailles(true);
@@ -44,7 +44,7 @@ function AppRapportFactures() {
         setClient_name(item.facture.Client.name);
         setAmount(item.facture.amount);
         setCurrency(item.facture.currency);
-        setDate_facture(constantes.formatDate(item.facture.date_facture))
+        setDate_facture(constantes.formatDateString(item.facture.date_facture))
         setDate_facture_interval(constantes.geDateFormat(item.facture.date_facture))
         setDetails(item.details)
         setOpen_modal_details(true);
@@ -144,7 +144,7 @@ function AppRapportFactures() {
                                         <td>{item.facture.amount}</td>
                                         <td>{item.facture.currency}</td>
                                         <td>
-                                            {constantes.formatDate(item.facture.date_facture)}<br/>
+                                            {constantes.formatDateString(item.facture.date_facture)}<br/>
                                             {constantes.geDateFormat(item.facture.date_facture)}
                                         </td>
                                         <td><span

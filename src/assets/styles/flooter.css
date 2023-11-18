@@ -1,0 +1,21 @@
+/* Flooter.css */
+
+.flooter-container {
+    background-color: #f9f9f9;
+    padding: 10px;
+    text-align: center;
+}
+
+.social-icons {
+    margin-bottom: 10px;
+}
+
+.flooter-text {
+    font-size: 14px;
+    color: #666;
+}
+
+.social-icon{
+   font-size: 30px;
+    margin-left: 20px;
+}

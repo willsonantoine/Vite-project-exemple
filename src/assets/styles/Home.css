@@ -49,6 +49,17 @@
     margin-right: 10px;
 }
 
+.check-boutton-home{
+    background-color: #E3E9EF;
+    width: 100%;
+    padding-left: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-radius: 5px;
+}
+
+
+
 /*Phone*/
 @media screen and (min-width: 325px) and (max-width: 767px) {
     .menu-list {
