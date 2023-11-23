@@ -81,10 +81,12 @@ function AppProduits() {
     };
 
     useEffect(() => {
+        setIdServcie(constantes.getIdService())
         load_produits()
         loadProduitCategory()
         loadServices();
         loadFournisseur();
+
     }, [])
 
     const load_produits = () => {
@@ -98,6 +100,7 @@ function AppProduits() {
 
     const createProduit = () => {
         setIsPin(true)
+
         HttpRequest('/app/produits/create', 'POST', {
             "reference": reference,
             "name": name,
@@ -124,6 +127,7 @@ function AppProduits() {
     const createApprovisionnement = () => {
         if (fournisseur != null && qte != null && type != null) {
             setIsPin(true)
+
             HttpRequest('/app/produits/approvisionner', 'POST', {
                 "provenance": fournisseur,
                 "id_produit": id_produit,

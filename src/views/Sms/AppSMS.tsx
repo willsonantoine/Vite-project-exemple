@@ -30,8 +30,8 @@ const AppSMS = () => {
 
     const [ListMessages, setListMessage] = useState<CardMessage[]>([]);
 
-    const [options, setOptions] = useState([]);
     const [contacts, setContacts] = useState<CardContact[]>([])
+    const [ListContact, setListContact] = useState([])
     const [messages, setMessages] = useState('');
     const [phone, setPhone] = useState('');
     const [name, setName] = useState('');
@@ -43,9 +43,8 @@ const AppSMS = () => {
     }, [])
     const loadContacts = () => {
         HttpRequest('/user/contacts?limit=1000&page=1', 'GET').then((response) => {
-            const data = response.data.data.rows;
-            setOptions(data);
-            setContacts(response.data.data.rows)
+
+            setListContact(response.data.data.rows)
             setTotal_contact(response.data.data.count)
         }).catch((error) => {
             console.log(error);
@@ -64,7 +63,7 @@ const AppSMS = () => {
 
     const SendSMS = () => {
         let i = 1;
-        contacts.forEach((item: any) => {
+        contacts.forEach((item) => {
             HttpRequest('/sms/send-local', 'POST', {phone: item, message: messages, isAlert: 0}).then((response) => {
                 console.log(response);
                 i++;
@@ -194,11 +193,15 @@ const AppSMS = () => {
                                 justifyContent: 'space-between'
                             }}>
                             <div style={{textAlign: 'center', marginTop: 5, marginRight: 5}}>
-                                <img src={Images.default_user_image} height={30}/>
+                                <img src={Images.default_user_image} height={30} alt={''}/>
                             </div>
                             <div>
                                 <span>{item.name ? item.name : 'Inconnue'}</span><br/>
-                                <span style={{color: '#335676', fontSize: 12,fontWeight:'bold'}}> {item.user_contact.phone}</span>
+                                <span style={{
+                                    color: '#335676',
+                                    fontSize: 12,
+                                    fontWeight: 'bold'
+                                }}> {item.user_contact.phone}</span>
 
                             </div>
                         </div>
@@ -206,7 +209,7 @@ const AppSMS = () => {
                     </div>
                     <div>
                         <Button className='button-icon' style={{marginTop: 5, marginRight: 5}}>
-                            <SiGooglemessages /> </Button>
+                            <SiGooglemessages/> </Button>
                     </div>
                 </div>
             </div>
@@ -246,7 +249,7 @@ const AppSMS = () => {
                         <tbody>
                         {
                             ListMessages ?
-                                ListMessages.map((item: any, i) => {
+                                ListMessages.map((item, i) => {
                                     return (
                                         <tr key={i}>
                                             <td><strong>{i}</strong></td>
@@ -279,7 +282,9 @@ const AppSMS = () => {
                                         <div
                                             style={{display: "flex", flexDirection: 'row', justifyContent: 'flex-end'}}>
                                             <div>
-                                                <CardUserInfos user_to={item.user_to} phone={item.phone}/>
+                                                <CardUserInfos user_to={item.user_to} phone={item.phone}
+                                                               createdAt={item.createdAt} message={item.message}
+                                                               reference={item.reference} status={item.status}/>
                                             </div>
 
                                         </div>
@@ -326,10 +331,11 @@ const AppSMS = () => {
 
                     >
                         {
-                            options.map((option: any) => {
-                                return <Option
-                                    value={option.user_contact.phone}>{option.name} ({option.user_contact.phone})</Option>
-                            })
+                            ListContact ?
+                                ListContact.map((option:any) => {
+                                    return <Option
+                                        value={option.user_contact.phone}>{option.name} ({option.user_contact.phone})</Option>
+                                }) : ``
                         }
                     </Select>
                 </div>
@@ -377,8 +383,8 @@ const AppSMS = () => {
                     <span>Liste des contacts</span>
                     <div>
                         {
-                            contacts ?
-                                contacts.map((contact) => {
+                            ListContact ?
+                                ListContact.map((contact:any) => {
                                     return <CardContact name={contact.name} phone={contact.phone} id={contact.id}
                                                         user_contact={contact.user_contact}/>
                                 }) : ``

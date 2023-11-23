@@ -22,7 +22,7 @@ function AppRapportFactures() {
 
     useEffect(() => {
         loadFacturesCloud();
-    }, [])
+    }, [date,numero])
 
     function openDetails(item: any) {
         setNumero(item.facture.number);
@@ -33,6 +33,11 @@ function AppRapportFactures() {
         setDate_facture_interval(constantes.geDateFormat(item.facture.date_facture))
         setDetails(item.details)
         setOpen_detailles(true);
+    }
+
+    const onChangeDate = (value:string) => {
+        setDate(value);
+        loadFacturesCloud();
     }
 
     function close_modal_details() {
@@ -55,9 +60,9 @@ function AppRapportFactures() {
     }
 
     const loadFacturesCloud = () => {
-        setListFactures([])
 
-        HttpRequest(`/app/factures/load/4/${date}`, 'GET').then(response => {
+        const id_service = constantes.getIdService();
+        HttpRequest(`/app/factures/load/${id_service}/${date}`, 'GET').then(response => {
             const data = response.data;
             if (data.status == 200) {
                 setListFactures(data.data.rows);
@@ -116,8 +121,12 @@ function AppRapportFactures() {
             <div style={{display: "flex"}}>
                 <div className='form-group' style={{width: 200, marginLeft: 5}}>
                     <label>Date</label>
-                    <input type='date' className='textInputBorder' defaultValue={date}
-                           onChange={(e) => setDate(e.target.value)}/>
+                    <input
+                        type="date"
+                        className="textInputBorder"
+                        value={date}
+                        onChange={(e) => onChangeDate(e.target.value)}
+                    />
                 </div>
                 {<CardNombre label='Total' numero={total}/>}
             </div>
@@ -148,7 +157,12 @@ function AppRapportFactures() {
                                             {constantes.geDateFormat(item.facture.date_facture)}
                                         </td>
                                         <td><span
-                                            style={{backgroundColor: '#71A7E1', padding: 2, borderRadius: 9, color: "white"}}>Papnier {item.details.length}</span>
+                                            style={{
+                                                backgroundColor: '#71A7E1',
+                                                padding: 2,
+                                                borderRadius: 9,
+                                                color: "white"
+                                            }}>Papnier {item.details.length}</span>
                                         </td>
                                     </tr>
                                 )
@@ -163,20 +177,40 @@ function AppRapportFactures() {
                         ListFactures ?
                             ListFactures.map((item: any, i) => {
                                 return (
-                                    <div key={i} className='card-rapport-vente-mobile' onClick={() => openDetails(item)}>
+                                    <div key={i} className='card-rapport-vente-mobile'
+                                         onClick={() => openDetails(item)}>
                                         <div>
                                         <span
-                                            style={{backgroundColor: '#2E2E37', color: 'white', padding: 3, minWidth: 50}}>{item.facture.number}</span>
+                                            style={{
+                                                backgroundColor: '#2E2E37',
+                                                color: 'white',
+                                                padding: 3,
+                                                minWidth: 50
+                                            }}>{item.facture.number}</span>
                                             <span
-                                                style={{color: 'black', marginLeft: 5}}>{item.facture.Client.name}</span><br/>
-                                            <h6 style={{color: '#666666', marginTop: 5, marginLeft: 5}}>{constantes.formatDateString(item.facture.date_facture)}; {constantes.geDateFormat(item.facture.date_facture)}</h6>
+                                                style={{
+                                                    color: 'black',
+                                                    marginLeft: 5
+                                                }}>{item.facture.Client.name}</span><br/>
+                                            <h6 style={{
+                                                color: '#666666',
+                                                marginTop: 5,
+                                                marginLeft: 5
+                                            }}>{constantes.formatDateString(item.facture.date_facture)}; {constantes.geDateFormat(item.facture.date_facture)}</h6>
                                         </div>
                                         <div>
                                             <div>
                                                 <strong
                                                     style={{fontSize: 19}}>{item.facture.amount}</strong> {item.facture.currency}<br/>
                                                 <span
-                                                    style={{backgroundColor: '#35597B', color: 'white', padding: 3, fontSize: 12, borderRadius: 10, marginRight: 2}}>Produits ({item.details.length})</span>
+                                                    style={{
+                                                        backgroundColor: '#35597B',
+                                                        color: 'white',
+                                                        padding: 3,
+                                                        fontSize: 12,
+                                                        borderRadius: 10,
+                                                        marginRight: 2
+                                                    }}>Produits ({item.details.length})</span>
                                             </div>
                                         </div>
                                     </div>

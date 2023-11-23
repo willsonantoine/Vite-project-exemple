@@ -9,8 +9,8 @@ import Flooter from "../Components/Flooter.tsx";
 
 const Login = () => {
     const navigate = useNavigate();
-    const [username, setUsername] = useState('+243858250506');
-    const [password, setPassword] = useState('12345678');
+    const [username, setUsername] = useState('+243');
+    const [password, setPassword] = useState('');
     const [showMessageAlert, setshowMessageAlert] = useState(false);
     const [MessageAlert, setMessageAlert] = useState('');
     const [TyAlert, setTypeAlert] = useState(false);

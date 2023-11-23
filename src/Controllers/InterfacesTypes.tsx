@@ -30,6 +30,7 @@ type CardContact = {
 }
 
 type FactureInterface = {
+    reference:string,
     client_name: string,
     amount: number,
     currency: string,
@@ -52,4 +53,14 @@ type CardMessage = {
         phone: string;
         gender: string;
     }
+}
+
+type SelectOptions = {
+    value: string;
+    label: string;
+}
+
+type SelectOptionsContact = {
+    name: string;
+    phone: string;
 }

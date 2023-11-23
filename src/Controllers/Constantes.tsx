@@ -24,11 +24,18 @@ const getMessage = (error: any): string | any => {
             return 'Unprocessable Entity - Entité non traitable.';
         case 500:
             return 'Internal Server Error - Erreur interne du serveur.';
-        case 400: return  message;
+        case 400:
+            return message;
         default:
             return 'Une erreur inattendue s\'est produite.';
     }
 };
+
+function generateTransactionReference() {
+    const timestamp = Date.now().toString();
+    const randomDigits = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    return `MLINZI-${timestamp}-${randomDigits}`;
+}
 
 function geDateFormat(dateString: string): string {
     const date = new Date(dateString);
@@ -76,5 +83,17 @@ function formatDateString2(dateString: string): Moment {
     return date;
 }
 
+function getIdService() {
+    return localStorage.getItem('id_service') || '0'
+}
 
-export default {getMessage, geDateFormat, formatDateString, formatDateString2, getCurrentDate}
+
+export default {
+    getMessage,
+    geDateFormat,
+    formatDateString,
+    formatDateString2,
+    getCurrentDate,
+    getIdService,
+    generateTransactionReference
+}

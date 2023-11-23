@@ -27,32 +27,33 @@ function Home() {
                                 <br/>
                                 <h6 style={{fontSize: 15, marginTop: 5, marginBottom: 10}}>
                                     Nos produits et services</h6>
-                                    <Checkbox checked={true} disabled={false} className='check-boutton-home'>
-                                        Géstion de stock et facturation
-                                    </Checkbox><br/><br/>
-                                    <Checkbox checked={true} disabled={false} className='check-boutton-home'>
-                                        Gestion de caisse (entrées et sorties)
-                                    </Checkbox><br/><br/>
-                                    <Checkbox checked={true} disabled={false} className='check-boutton-home'>
-                                        Envoie et réception SMS avec SendName
-                                    </Checkbox><br/><br/>
-                                    <Checkbox checked={true} disabled={false} className='check-boutton-home'>
-                                        Conception de systèmes informatiques
-                                    </Checkbox><br/><br/>
-                                    <Checkbox checked={true} disabled={false} className='check-boutton-home'>
-                                        Conception et hébergement de sites web
-                                    </Checkbox><br/>
-                                </div>
-                                <br/>
-
+                                <Checkbox checked={true} disabled={false} className='check-boutton-home'>
+                                    Géstion de stock et facturation
+                                </Checkbox><br/><br/>
+                                <Checkbox checked={true} disabled={false} className='check-boutton-home'>
+                                    Gestion de caisse (entrées et sorties)
+                                </Checkbox><br/><br/>
+                                <Checkbox checked={true} disabled={false} className='check-boutton-home'>
+                                    Envoie et réception SMS avec SendName
+                                </Checkbox><br/><br/>
+                                <Checkbox checked={true} disabled={false} className='check-boutton-home'>
+                                    Conception de systèmes informatiques
+                                </Checkbox><br/><br/>
+                                <Checkbox checked={true} disabled={false} className='check-boutton-home'>
+                                    Conception et hébergement de sites web
+                                </Checkbox><br/>
                             </div>
-                        </div>
-                        <div className="col-md-6" id='imageBanier'>
-                            <img src={Images.home_1} style={{height: '100%', maxHeight: 400}}/>
+                            <br/>
+
                         </div>
                     </div>
+                    <div className="col-md-6" id='imageBanier'>
+                        <img src={Images.home_1} style={{height: '100%', maxHeight: 400}}/>
+                    </div>
                 </div>
-            <Flooter/>
+                <Flooter/>
+            </div>
+
 
         </>
     )

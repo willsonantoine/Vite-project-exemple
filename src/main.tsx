@@ -1,80 +1,44 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import App from "./App.tsx";
-import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import Login from "./views/Login.tsx";
-import NotFound from "./views/NotFound.tsx";
-import Produits from "./views/Produits.tsx";
-import AppRoot from "./views/AppRoot.tsx";
-import AppProduit from "./views/AppProduits/AppProduits.tsx";
-import AppSMS from "./views/Sms/AppSMS.tsx";
-import AppFacturations from "./views/AppFacturation/AppFacturations.tsx";
-import AppRapportFactures from "./views/Rapport/Rapport.tsx";
-import Apropos from "./views/Apropos/AppApropos.tsx";
-import Contact from "./views/Apropos/Contact.tsx";
 import CreateAccount from "./views/CreateAccount.tsx";
 import ValidateAccount from "./views/ValidateAccount.tsx";
+import Produits from "./views/Produits.tsx";
+import AppRoot from "./views/AppRoot.tsx";
+import AppProduits from "./views/AppProduits/AppProduits.tsx";
+import AppSMS from "./views/Sms/AppSMS.tsx";
+import AppFacturations from "./views/AppFacturation/AppFacturations.tsx";
+import Apropos from "./views/Apropos/AppApropos.tsx";
+import Contact from "./views/Apropos/Contact.tsx";
+import AppRapportFactures from "./views/Rapport/Rapport.tsx";
+import NotFound from "./views/NotFound.tsx";
 
-const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <App/>, errorElement: <NotFound/>
-    },
-    {
-        path: '/login',
-        element: <Login/>,
-        errorElement: <NotFound/>
-    }, {
-        path: '/create-account',
-        element: <CreateAccount/>,
-        errorElement: <NotFound/>
-    },
-    {
-        path: '/validate-account',
-        element: <ValidateAccount/>,
-        errorElement: <NotFound/>
-    },
-    {
-        path: "/produits",
-        element: <Produits/>
-    },
-    {
-        path: "/app/home",
-        element: <AppRoot/>
-    },
-    {
-        path: "/app/produit",
-        element: <AppProduit/>
-    }
-    ,
-    {
-        path: "/app/sms",
-        element: <AppSMS/>
-    },
-    {
-        path: "/app/facturation",
-        element: <AppFacturations/>,
-        errorElement: <NotFound/>
-    },
-    {
-        path: "/apropos",
-        element: <Apropos/>,
-        errorElement: <NotFound/>
-    },
-    {
-        path: "/contact",
-        element: <Contact/>,
-        errorElement: <NotFound/>
-    },
-    {
-        path: "/app/rapport",
-        element: <AppRapportFactures/>,
-        errorElement: <NotFound/>
-    }
-]);
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
+const AppRouter = () => (
+    <Router>
+        <Routes>
+            <Route path="/" element={<App/>}/>
+            <Route path="/login" element={<Login/>}/>
+            <Route path="/create-account" element={<CreateAccount/>}/>
+            <Route path="/validate-account" element={<ValidateAccount/>}/>
+            <Route path="/produits" element={<Produits/>}/>
+            <Route path="/app/home" element={<AppRoot/>}/>
+            <Route path="/app/produit" element={<AppProduits/>}/>
+            <Route path="/app/sms" element={<AppSMS/>}/>
+            <Route path="/app/facturation" element={<AppFacturations/>}/>
+            <Route path="/apropos" element={<Apropos/>}/>
+            <Route path="/contact" element={<Contact/>}/>
+            <Route path="/app/rapport" element={<AppRapportFactures/>}/>
+            <Route path="*" element={<NotFound/>}/>
+        </Routes>
+    </Router>
+);
+
+ReactDOM.render(
     <React.StrictMode>
-        <RouterProvider router={router}/>
-    </React.StrictMode>
+        <AppRouter/>
+    </React.StrictMode>,
+    document.getElementById('root')
 );

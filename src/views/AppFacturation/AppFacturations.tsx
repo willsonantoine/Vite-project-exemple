@@ -12,6 +12,7 @@ import Search from "antd/es/input/Search";
 import {IoIosAddCircleOutline} from "react-icons/io";
 import {MdDelete, MdEditNote} from "react-icons/md";
 import Invoice from "./Invoice.tsx";
+import constantes from "../../Controllers/Constantes.tsx";
 
 
 function AppFacturations() {
@@ -21,12 +22,15 @@ function AppFacturations() {
     const [ListClients, setListClients] = useState([])
     const [ListFactures, setListFactures] = useState<FactureInterface[]>([])
     const [panier, setPanier] = useState<CardPanier[]>([]);
+    const [panierPrint, setPanierPrint] = useState<CardPanier[]>([]);
     const [total_general, setTotalGeneral] = useState(0);
     const [numero, setNumero] = useState('');
     const [clientName, setClientName] = useState('CLIENT ORDINAIRE');
     const [currency, setCurrency] = useState('USD');
     const [modalUpdateProduito, setModalUpdate] = useState(false);
-    const [Facture, setFacture] = useState({});
+    const [Facture, setFacture] = useState<FactureInterface>();
+    const [date, setDate] = useState(`${new Date().toISOString()}`)
+    const [amount_print, setAmount_Print] = useState(0)
 
     const [currentIndexProduit, setCurrentIndex] = useState(0);
     const [currentNameProduit, setCurrentNameProduit] = useState('')
@@ -35,8 +39,10 @@ function AppFacturations() {
 
     const [open_listProduit, setOpenListProduit] = useState(false);
     const [open_printInvoice, setOpenPrintInvoice] = useState(false);
+    const [reference, setReference] = useState('');
 
     useEffect(() => {
+        setReference(constantes.generateTransactionReference())
         load_produits();
         getProduitsFromLocalStorage()
         calculateTotal()
@@ -44,6 +50,7 @@ function AppFacturations() {
         loadClients();
         loadAllClient();
         setCurrency('USD')
+        setNumero("INI"+ListFactures.length)
     }, [panier])
 
     const loadAllFactures = () => {
@@ -72,10 +79,13 @@ function AppFacturations() {
     }
 
     const getProduitsFromLocalStorage = () => {
-        const data: string | any = localStorage.getItem('produits');
-        const listProduit = JSON.parse(data);
-        setListProduits(listProduit)
-        setListProduitsCurrent(listProduit)
+        const data = localStorage.getItem('produits');
+        if (data) {
+            const listProduit = JSON.parse(data);
+            setListProduits(listProduit)
+            setListProduitsCurrent(listProduit)
+        }
+
     }
 
     const load_produits = () => {
@@ -98,25 +108,41 @@ function AppFacturations() {
     }
 
     const constSaveFacture = () => {
-        const facture: FactureInterface = {
+        setDate(new Date().toISOString());
+        setNumero('M' + (ListFactures.length + 1));
+        setReference(constantes.generateTransactionReference())
+        setFacture({
+            reference: reference,
             client_name: clientName,
             amount: total_general,
             currency: currency,
-            number: 'ME' + (ListFactures.length + 1),
-            date: new Date().toISOString(),
+            number: numero,
+            date: date,
             synchro: false,
             synchroAt: null,
             details: panier
-        }
-        setNumero(facture.number)
-        setFacture(facture)
-        ListFactures.push(facture);
-        open_pintInvoice()
-        localStorage.setItem('factures', JSON.stringify(ListFactures))
+        })
 
-        setPanier([])
+        setPanierPrint(panier)
+        setAmount_Print(total_general)
+        setFacture(Facture)
+
+        ListFactures.push({
+            reference: reference,
+            client_name: clientName,
+            amount: total_general,
+            currency: currency,
+            number: numero,
+            date: date,
+            synchro: false,
+            synchroAt: null,
+            details: panier
+        });
         setClientName('CLIENT ORDINAIRE')
+        open_pintInvoice()
+        setPanier([])
 
+        localStorage.setItem('factures', JSON.stringify(ListFactures))
     }
 
     const close_printInvoice = () => {
@@ -189,9 +215,9 @@ function AppFacturations() {
                                 <img src={Images.default_product} height={30} alt={name}/>
                             </div>
                             <div>
-                                <h5>{name}</h5>
-                                <h6 style={{color: '#335676', fontSize: 12}}>Prix Min {prix_min} USD;
-                                    Max {prix_max} USD</h6>
+                                <span style={{fontWeight: 'bold'}}>{name}</span><br/>
+                                <span style={{color: '#335676', fontSize: 12}}>Prix Min <strong>{prix_min}</strong> USD;
+                                    Max <strong>{prix_max}</strong> USD</span>
                             </div>
                         </div>
 
@@ -426,7 +452,9 @@ function AppFacturations() {
                 height={'73%'}
             >
 
-                <Invoice facture={Facture}/>
+                <Invoice number={numero} amount={amount_print} details={panierPrint} client_name={clientName}
+                         date={date}
+                         currency={currency} synchro={false} synchroAt={null} reference={reference}/>
 
             </Drawer>
 

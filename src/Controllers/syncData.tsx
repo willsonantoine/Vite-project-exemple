@@ -1,7 +1,9 @@
 import HttpRequest from "./HttpRequest.tsx";
+import constantes from "./Constantes.tsx";
 
 const syncData = () => {
     const factures = localStorage.getItem('factures');
+    const id_service = constantes.getIdService();
     if (factures) {
         const data = JSON.parse(factures);
         if (data) {
@@ -13,7 +15,7 @@ const syncData = () => {
             });
 
             updatedData.forEach((item: FactureInterface) => {
-                HttpRequest("/app/factures/create/4", 'POST', item)
+                HttpRequest("/app/factures/create/" + id_service, 'POST', item)
                     .then(response => {
                         if (response.data.success === 200) {
                             // Mettre à jour l'état de synchronisation de la facture localement
